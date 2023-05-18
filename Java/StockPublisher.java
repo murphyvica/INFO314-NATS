@@ -1,3 +1,5 @@
+//import io.nats.client.*;
+
 /**
  * Take the NATS URL on the command-line.
  */
@@ -7,6 +9,8 @@ public class StockPublisher {
       if (args.length > 0) {
           natsURL = args[0];
       }
+
+      //Connection nc = nats.connect(natsURL)
 
       System.console().writer().println("Starting stock publisher....");
 
@@ -18,11 +22,14 @@ public class StockPublisher {
       new Thread(sm3).start();
     }
 
+    //nc.publish(sm)
+
     public synchronized static void publishDebugOutput(String symbol, int adjustment, int price) {
         System.console().writer().printf("PUBLISHING %s: %d -> %f\n", symbol, adjustment, (price / 100.f));
     }
     // When you have the NATS code here to publish a message, put "publishMessage" in
     // the above where "publishDebugOutput" currently is
     public synchronized static void publishMessage(String symbol, int adjustment, int price) {
+        //NATS code here to publish stuff to NATS server instead of console
     } 
 }
