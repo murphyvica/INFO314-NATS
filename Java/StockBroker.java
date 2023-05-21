@@ -58,6 +58,7 @@ public class StockBroker {
     }
 
     private static double calculateTransactionAmount(int amount, boolean buy) {
+        // Logic for adding the Broker's fee
         double transactionAmount = 0.0;
         if (buy) {
             transactionAmount = amount + (amount * (10.0 / 100.0));
@@ -68,7 +69,6 @@ public class StockBroker {
     }
 
     private static String createOrderReceipt(byte[] originalMsg, double transactionAmount) {
-        // Assuming the originalMsg is a byte array, you can convert it to a string
         String originalMsgStr = new String(originalMsg);
         
         // Create the order receipt XML using the original message and transaction amount
