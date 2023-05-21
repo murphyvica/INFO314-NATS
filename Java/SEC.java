@@ -65,7 +65,7 @@ public class SEC {
         DOMSource source = new DOMSource(doc);
 
         // Not sure what we should put in file path
-        String xmlFilePath = "path/to/logfile.xml";
+        String xmlFilePath = "";
         StreamResult result = new StreamResult(new File(xmlFilePath));
 
         // Transform and save the XML file
