@@ -63,90 +63,84 @@ public class StockBrokerClient {
         parseStrategyFile(strategyFile);
     }
 
-    public void prepareRequest(String symbol) throws Exception {
-        String natsURL = "nats://127.0.0.1:4222";
-        Connection nc = Nats.connect(natsURL);
-
-        
-        Dispatcher d = nc.createDispatcher((msg) -> {
-            String response = new String(msg.getData());
-            System.out.println(response);
-
-            
-            try {
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                Document document = builder.parse(new InputSource(new StringReader(response)));
-                Element root = document.getDocumentElement();
-                NodeList stockNodes = root.getElementsByTagName("stock");
-                // each message contains 1 or multiple messages
-                // for (int i = 0; i < stockNodes.getLength(); i++) {
-                Element stock = (Element) stockNodes.item(0);
-                Element name = (Element) stock.getElementsByTagName("name").item(0);
-                Element adjuestedPrice = (Element) stock.getElementsByTagName("adjustedPrice").item(0);
-                String stockName = name.getTextContent();
-                int price = Integer.parseInt(adjuestedPrice.getTextContent());
-                String request = "";
-                for (int j = 0; j < list.size(); j++) {
-                    Strategy strategy = list.get(j);
-                    if (strategy.stock.equals("all") || strategy.stock.equals(stockName)) {
-                        if (strategy.compare.equals("below")) {
-                            if (price < strategy.value && stocks.get(stockName) >= strategy.amount) {
-                                if (strategy.amount == -1) {
-                                    request = "<order><" + strategy.action + "symbol=" + stockName + 
-                                    "amount=" + stocks.get(stockName) + " /></order>";
-                                    break;
-                                } else {
-                                    request = "<order><" + strategy.action + "symbol=" + stockName + 
-                                    "amount=" + strategy.amount + " /></order>";
-                                    break;
+    public void prepareRequest(String[] symbols, Connection nc) throws Exception {
+        for (int i = 0; i < symbols.length; i++) {
+            String symbol = symbols[i];
+            Dispatcher d = nc.createDispatcher((msg) -> {
+                String response = new String(msg.getData());
+                System.out.println(response);
+                try {
+                    DocumentBuilder builder = factory.newDocumentBuilder();
+                    Document document = builder.parse(new InputSource(new StringReader(response)));
+                    Element root = document.getDocumentElement();
+                    NodeList stockNodes = root.getElementsByTagName("stock");
+                    Element stock = (Element) stockNodes.item(0);
+                    Element name = (Element) stock.getElementsByTagName("name").item(0);
+                    Element adjuestedPrice = (Element) stock.getElementsByTagName("adjustedPrice").item(0);
+                    String stockName = name.getTextContent();
+                    Double price = Double.parseDouble(adjuestedPrice.getTextContent());
+                    String request = "";
+                    for (int j = 0; j < list.size(); j++) {
+                        Strategy strategy = list.get(j);
+                        if (strategy.stock.equals("all") || strategy.stock.equals(stockName)) {
+                            if (strategy.compare.equals("below")) {
+                                if (price < strategy.value && stocks.get(stockName) != null 
+                                && stocks.get(stockName) >= strategy.amount) {
+                                    if (strategy.amount == -1) {
+                                        request = "<order><" + strategy.action + " symbol=\"" + stockName + 
+                                        "\" amount=\"" + stocks.get(stockName) + "\" /></order>";
+                                        break;
+                                    } else {
+                                        request = "<order><" + strategy.action + " symbol=\"" + stockName + 
+                                        "\" amount=\"" + strategy.amount + "\" /></order>";
+                                        break;
+                                    }
                                 }
-                            }
-                        } else if (strategy.compare.equals("above")) {
-                            if (price > strategy.value && stocks.get(stockName) >= strategy.amount) {
-                                if (strategy.amount == -1) {
-                                    request = "<order><" + strategy.action + "symbol=" + stockName + 
-                                    "amount=" + stocks.get(stockName) + " /></order>";
-                                    break;
-                                } else {
-                                    request = "<order><" + strategy.action + "symbol=" + stockName + 
-                                    "amount=" + strategy.amount + " /></order>";
-                                    break;
+                            } else if (strategy.compare.equals("above")) {
+                                if (price > strategy.value && stocks.get(stockName) != null
+                                && stocks.get(stockName) >= strategy.amount) {
+                                    if (strategy.amount == -1) {
+                                        request = "<order><" + strategy.action + " symbol=\"" + stockName + 
+                                        "\" amount=\"" + stocks.get(stockName) + "\" /></order>";
+                                        break;
+                                    } else {
+                                        request = "<order><" + strategy.action + " symbol=\"" + stockName + 
+                                        "\" amount=\"" + strategy.amount + "\" /></order>";
+                                        break;
+                                    }
                                 }
                             }
                         }
+                    } 
+                    // System.out.println(request);
+                    if (!request.equals("")) {
+                        sendRequest(nc, request);
                     }
-                } 
-                // if (!request.equals("")) {
-                //     sendRequest(nc, request);
-                // }
 
-            } catch (Exception e) {
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-            }
-
-        });
-        d.subscribe(symbol);
-    
+            });
+            d.subscribe(symbol);
+        }
     }
         
 
-    public void sendRequest(Connection nc, String requestPayload) throws IOException, InterruptedException{
-        // String natsURL = "nats://127.0.0.1:4222";
-        // Connection nc = Nats.connect(natsURL);
-        // String requestPayload = "<order><buy symbol=\"AMAZ\" amount=\"20\" /></order>";
+    public void sendRequest(Connection nc, String requestPayload){
         try {
             String uniqueReplyTo = nc.createInbox();
             Subscription sub = nc.subscribe(uniqueReplyTo);
             sub.unsubscribe(1);
 
             // Send the request
-            nc.publish("kevin", uniqueReplyTo, requestPayload.getBytes());
+            nc.publish(stockBroker, uniqueReplyTo, requestPayload.getBytes());
 
             // Read the reply
             Message msg = sub.nextMessage(Duration.ofSeconds(5));
 
             // Use the response
-            // System.out.println(new String(msg.getData()));
+            System.out.println(new String(msg.getData()));
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(new InputSource(new StringReader(new String(msg.getData()))));
 
@@ -254,8 +248,6 @@ public class StockBrokerClient {
                     compare = "above";
                     Element valueElement = (Element) strategyElement.getElementsByTagName("above").item(0);
                     value = Integer.parseInt(valueElement.getTextContent());
-                    // System.out.println("above");
-                    // System.out.println(value);
                 }
 
 
@@ -267,13 +259,11 @@ public class StockBrokerClient {
                         stock = "all";
                     }
                 }
-                // System.out.println(stock + value + amount + action + compare);
                 Strategy stra = new Strategy(stock, value, amount, action, compare);
-                // System.out.println(stra);
                 list.add(stra);
             }
         } catch (Exception e) {
-            
+            e.printStackTrace();
         }
     }
 
@@ -281,17 +271,18 @@ public class StockBrokerClient {
         File portFile = new File("portfolio-1.xml");
         File strFile = new File("strategy-1.xml");
         StockBrokerClient sbc = new StockBrokerClient(strFile, portFile, "kevin");
-        // System.out.println(sbc.list);
-        // sbc.prepareRequest("APPL");
+        // String[]
+        String[] symbols = {"AMZN", "APPL", "META", "MSFT", "GOOG", "TSLA", "JNJ", 
+        "WMT", "ACTV", "BLIZ", "ROVIO", "NFLX", "ORCL", "CSCO", "NVO", "NVDA", 
+        "GE", "GMC", "FORD", "TM", "DE", "MUFG", "UBER", "ORLY"};
         try {
-            sbc.prepareRequest("APPL");
+            String natsURL = "nats://127.0.0.1:4222";
+            Connection nc = Nats.connect(natsURL);
+            sbc.prepareRequest(symbols, nc);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        // while (true) {
-        //     sbc.sendRequest();
-        // }
 
     }
 }
+
