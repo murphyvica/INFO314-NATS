@@ -4,6 +4,12 @@ import java.util.regex.Pattern;
 
 public class StockBroker {
 
+    public static String[] stocks = ["AMZN", "APPL", "META", "MSFT", "GOOG", "TSLA", "JNJ", "WMT",
+                                     "ACTV", "BLIZ", "ROVIO", "NFLX", "ORCL", "CSCO", "NVO", "NVDA",
+                                     "GE", "GMC", "FORD", "TM", "DE", "MUFG", "UBER", "ORLY"];
+    
+    public HashMap<String, double> stockPrices = new HashMap<String, double>();
+
     public static void main(String... args) throws Exception {
         // Connect to NATS server
         String natsURL = "nats://127.0.0.1:4222";
@@ -11,11 +17,59 @@ public class StockBroker {
             natsURL = args[0];
         }
 
+        Options options = new Options.Builder().server(natsURL).build();
+        Connection nc = Nats.connect(options);
+
+        for (String stock : stocks) {
+            Dispatcher s = nc.createDispatcher((msg) -> {
+                String message = new String(msg.getData());
+                // Parse message and extract stock symbol and price
+                String stockSymbol = parseStockSymbol(message);
+                double stockPrice = parseStockPrice(message);
+
+                // Update stockPrices HashMap
+                stockPrices.put(stockSymbol, stockPrice);
+
+                // Message for debugging
+                System.out.println("Received update for " + stockSymbol + ": " + stockPrice);
+            });
+            s.subscribe(stock);
+        }
+
+        // Keep the program running
+        Thread.sleep(Long.MAX_VALUE);
+
+    private static String parseStockSymbol(String message) {
+        // Extract stock symbol
+        Pattern pattern = Pattern.compile("<name>(.*?)</name>");
+        Matcher matcher = pattern.matcher(message);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null; // Null if not found (shouldn't reach here)
+    }
+
+    private static double parseStockPrice(String message) {
+        // Extract stock price from
+        Pattern pattern = Pattern.compile("<adjustedPrice>(.*?)</adjustedPrice>");
+        Matcher matcher = pattern.matcher(message);
+        if (matcher.find()) {
+            return Double.parseDouble(matcher.group(1));
+        }
+        return 0.0; // 0.0 if not found (shouldn't reach here)
+    }
+        // inisialize with multiple stock brokers
+
+   
+
+        //Subscribe to all stocks to get price
+
         Connection nc = Nats.connect(natsURL);
+
         
         Dispatcher d = nc.createDispatcher((msg) -> {
             String stockSymbol = "";
-            int amount = 0;
+            double amount = 0;
             boolean buy = true;
             
             String xmlMessage = new String(msg.getData());
@@ -27,11 +81,13 @@ public class StockBroker {
             }
             
             // Extract amount using regex
-            Pattern amountPattern = Pattern.compile("amount=\"(.*?)\"");
-            Matcher amountMatcher = amountPattern.matcher(xmlMessage);
-            if (amountMatcher.find()) {
-                amount = Integer.parseInt(amountMatcher.group(1));
-            }
+            //Pattern amountPattern = Pattern.compile("amount=\"(.*?)\"");
+            //Matcher amountMatcher = amountPattern.matcher(xmlMessage);
+            //if (amountMatcher.find()) {
+            //    amount = Integer.parseInt(amountMatcher.group(1));
+            //}
+
+            amount = stockPrices.get(stockSymbol);
             
             // Check if it's a buy or sell order
             buy = xmlMessage.contains("<buy");
@@ -54,11 +110,13 @@ public class StockBroker {
         });
 
         // Subscribe to the NATS subject "clientName"
-        d.subscribe("clientName");
+        d.subscribe("kevin");
     }
 
-    private static double calculateTransactionAmount(int amount, boolean buy) {
+
+    private static double calculateTransactionAmount(doubble amount, boolean buy) {
         // Logic for adding the Broker's fee
+        // Take total price of amount since amount is number of shares
         double transactionAmount = 0.0;
         if (buy) {
             transactionAmount = amount + (amount * (10.0 / 100.0));
