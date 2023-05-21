@@ -23,7 +23,7 @@ public class StockMonitor {
             d1.subscribe(stock);
 
         }
-        } else {
+        } /* else {
             Dispatcher d1 = nc.createDispatcher((msg) -> {
                 System.out.println(new String(msg.getData()));
                 System.out.println("Received");
@@ -32,7 +32,7 @@ public class StockMonitor {
     
             d1.subscribe("*");
 
-        }
+        }*/
     }
 
     private static void logStockData(String data) {
