@@ -32,7 +32,7 @@ public class StockPublisher {
     public synchronized static void publishMessage(String symbol, int adjustment, int price) {
         //NATS code here to publish stuff to NATS server instead of console
         Instant timestamp = Instant.now();
-        String message = "<message sent=\"" + timestamp + "><stock><name>" + symbol + "</name><adjustment>" + adjustment + "</adjustment>"
+        String message = "<message sent=\"" + timestamp + "\"><stock><name>" + symbol + "</name><adjustment>" + adjustment + "</adjustment>"
                         + "<adjustedPrice>" + price / 100.f + "</adjustedPrice></stock></message>";
         System.console().writer().println(message);
         nc.publish(symbol, message.getBytes());
