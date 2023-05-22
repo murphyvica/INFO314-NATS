@@ -5,6 +5,8 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.OutputKeys;
+
 
 import java.io.*;
 import java.util.regex.*;
@@ -53,32 +55,15 @@ public class SEC {
     }
 
     private static void logToXML(String message) throws Exception {
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.newDocument();
-        Element rootElement = doc.createElement("logs");
-        doc.appendChild(rootElement);
-
-        Element logEntry = doc.createElement("logEntry");
-        rootElement.appendChild(logEntry);
-
-        // Create message
-        Element logMessage = doc.createElement("message");
-        logMessage.appendChild(doc.createTextNode(message));
-        logEntry.appendChild(logMessage);
-
-        // Write to XML file
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource source = new DOMSource(doc);
-
-        // Not sure what we should put in file path
         String xmlFilePath = "SEClogs/SEC.xml";
-        StreamResult result = new StreamResult(new File(xmlFilePath));
-
-        // Transform and save the XML file
-        transformer.transform(source, result);
-
+    
+        File file = new File(xmlFilePath);
+    
+        try (PrintWriter writer = new PrintWriter(new FileOutputStream(file, true))) {
+            writer.println(message);
+        }
+    
         System.out.println("Logged to XML: " + xmlFilePath);
     }
+    
 }

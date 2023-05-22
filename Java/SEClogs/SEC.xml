@@ -1,1 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><logs><logEntry><message>&lt;orderReceipt&gt;&lt;order&gt;&lt;buy symbol="GOOG" amount="500" /&gt;&lt;/order&gt;&lt;complete amount&gt;29.656000000000002&lt;/complete amount&gt;&lt;/orderReceipt&gt;</message></logEntry></logs>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<logs>
+    <logEntry>
+        <message>&lt;orderReceipt&gt;&lt;order&gt;&lt;buy symbol="GOOG" amount="500" /&gt;&lt;/order&gt;&lt;complete amount&gt;30.778&lt;/complete amount&gt;&lt;/orderReceipt&gt;</message>
+    </logEntry>
+</logs>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<logs>
+        
+    <logEntry>
+                
+        <message>&lt;orderReceipt&gt;&lt;order&gt;&lt;buy symbol="GOOG" amount="500" /&gt;&lt;/order&gt;&lt;complete amount&gt;30.778&lt;/complete amount&gt;&lt;/orderReceipt&gt;</message>
+            
+    </logEntry>
+    
+    <logEntry>
+        <message>&lt;orderReceipt&gt;&lt;order&gt;&lt;buy symbol="GOOG" amount="500" /&gt;&lt;/order&gt;&lt;complete amount&gt;32.010000000000005&lt;/complete amount&gt;&lt;/orderReceipt&gt;</message>
+    </logEntry>
+</logs>
+<orderReceipt><order><buy symbol="MSFT" amount="500" /></order><complete amount>53.735</complete amount></orderReceipt>
+<orderReceipt><order><buy symbol="GOOG" amount="500" /></order><complete amount>39.996</complete amount></orderReceipt>
+<orderReceipt><order><buy symbol="MSFT" amount="500" /></order><complete amount>56.331</complete amount></orderReceipt>
+<orderReceipt><order><buy symbol="MSFT" amount="500" /></order><complete amount>55.649</complete amount></orderReceipt>
+<orderReceipt><order><buy symbol="GOOG" amount="500" /></order><complete amount>39.885999999999996</complete amount></orderReceipt>
