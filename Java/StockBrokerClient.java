@@ -268,8 +268,8 @@ public class StockBrokerClient {
     }
 
     public static void main(String[] args) {
-        File portFile = new File("portfolio-1.xml");
-        File strFile = new File("strategy-1.xml");
+        File portFile = new File("Clients/portfolio-1.xml");
+        File strFile = new File("Clients/strategy-1.xml");
         StockBrokerClient sbc = new StockBrokerClient(strFile, portFile, "kevin");
         // String[]
         String[] symbols = {"AMZN", "APPL", "META", "MSFT", "GOOG", "TSLA", "JNJ", 
