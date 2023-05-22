@@ -275,9 +275,18 @@ public class StockBrokerClient {
     }
 
     public static void main(String[] args) {
-        File portFile = new File("../Clients/portfolio-1.xml");
-        File strFile = new File("../Clients/strategy-1.xml");
-        StockBrokerClient sbc = new StockBrokerClient(strFile, portFile, "kevin");
+        File portFile1 = new File("../Clients/portfolio-1.xml");
+        File strFile1 = new File("../Clients/strategy-1.xml");
+        File portFile2 = new File("../Clients/portfolio-2.xml");
+        File strFile2 = new File("../Clients/strategy-2.xml");
+        File portFile3 = new File("../Clients/portfolio-3.xml");
+        File strFile3 = new File("../Clients/strategy-3.xml");
+        File portFile4 = new File("../Clients/portfolio-4.xml");
+        File strFile4 = new File("../Clients/strategy-4.xml");
+        StockBrokerClient sbc1 = new StockBrokerClient(strFile1, portFile1, "kevin");
+        StockBrokerClient sbc2 = new StockBrokerClient(strFile2, portFile2, "kevin");
+        StockBrokerClient sbc3 = new StockBrokerClient(strFile3, portFile3, "james");
+        StockBrokerClient sbc4 = new StockBrokerClient(strFile4, portFile4, "james");
         // String[]
         String[] symbols = {"AMZN", "APPL", "META", "MSFT", "GOOG", "TSLA", "JNJ", 
         "WMT", "ACTV", "BLIZ", "ROVIO", "NFLX", "ORCL", "CSCO", "NVO", "NVDA", 
@@ -285,7 +294,10 @@ public class StockBrokerClient {
         try {
             String natsURL = "nats://127.0.0.1:4222";
             Connection nc = Nats.connect(natsURL);
-            sbc.prepareRequest(symbols, nc);
+            sbc1.prepareRequest(symbols, nc);
+            sbc2.prepareRequest(symbols, nc);
+            sbc3.prepareRequest(symbols, nc);
+            sbc4.prepareRequest(symbols, nc);
         } catch (Exception e) {
             e.printStackTrace();
         }
