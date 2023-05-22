@@ -35,6 +35,6 @@ public class StockPublisher {
         String message = "<message sent=\"" + timestamp + "\"><stock><name>" + symbol + "</name><adjustment>" + adjustment + "</adjustment>"
                         + "<adjustedPrice>" + price / 100.f + "</adjustedPrice></stock></message>";
         System.console().writer().println(message);
-        nc.publish("NASDAQ." + symbol, message.getBytes());
+        nc.publish(symbol, message.getBytes());
     } 
 }
