@@ -1,20 +1,28 @@
 import io.nats.client.*;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import java.io.*;
 import java.util.regex.*;
 
 public class SEC {
 
     public static String[] brokers = {};
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder builder = factory.newDocumentBuilder();
 
     public static void main(String... args) throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
         String natsURL = "nats://127.0.0.1:4222";
         if (args.length > 0) {
             natsURL = args[0];
         }
+
+        Options options = new Options.Builder().server(natsURL).build();
+        Connection nc = Nats.connect(options);
 
         for (String broker : brokers) {
             Dispatcher d = nc.createDispatcher((msg) -> {
@@ -30,11 +38,8 @@ public class SEC {
                     }
                 }
             });
-            d.subscribe(*);
+            d.subscribe("*");
         }
-
-        Options options = new Options.Builder().server(natsURL).build();
-        Connection nc = Nats.connect(options);
     }
 
     private static double parseStockPrice(String message) {
@@ -45,7 +50,6 @@ public class SEC {
             return Double.parseDouble(matcher.group(1));
         }
         return 0.0; // 0.0 if not found (shouldn't reach here)
-        return 0.0;
     }
 
     private static void logToXML(String message) throws Exception {
@@ -69,7 +73,7 @@ public class SEC {
         DOMSource source = new DOMSource(doc);
 
         // Not sure what we should put in file path
-        String xmlFilePath = "";
+        String xmlFilePath = "/SEClogs/SEC.xml";
         StreamResult result = new StreamResult(new File(xmlFilePath));
 
         // Transform and save the XML file

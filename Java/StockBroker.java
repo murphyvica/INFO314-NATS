@@ -1,14 +1,16 @@
 import io.nats.client.*;
+
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StockBroker {
 
-    public static String[] stocks = ["AMZN", "APPL", "META", "MSFT", "GOOG", "TSLA", "JNJ", "WMT",
+    public static String[] stocks = {"AMZN", "APPL", "META", "MSFT", "GOOG", "TSLA", "JNJ", "WMT",
                                      "ACTV", "BLIZ", "ROVIO", "NFLX", "ORCL", "CSCO", "NVO", "NVDA",
-                                     "GE", "GMC", "FORD", "TM", "DE", "MUFG", "UBER", "ORLY"];
+                                     "GE", "GMC", "FORD", "TM", "DE", "MUFG", "UBER", "ORLY"};
     
-    public HashMap<String, double> stockPrices = new HashMap<String, double>();
+    HashMap<String, Double> stockPrices = new HashMap<String, Double>();
 
     public static void main(String... args) throws Exception {
         // Connect to NATS server
@@ -38,6 +40,7 @@ public class StockBroker {
 
         // Keep the program running
         Thread.sleep(Long.MAX_VALUE);
+    }
 
         private static String parseStockSymbol(String message) {
             // Extract stock symbol
@@ -108,6 +111,7 @@ public class StockBroker {
                 // Publish the order receipt
                 nc.publish(msg.getReplyTo(), orderReceipt.getBytes());
             });
+        
 
             // Subscribe to the NATS subject "clientName"
             d.subscribe("kevin");
@@ -116,7 +120,7 @@ public class StockBroker {
         }
 
 
-        private static double calculateTransactionAmount(doubble amount, boolean buy) {
+        private static double calculateTransactionAmount(double amount, boolean buy) {
             // Logic for adding the Broker's fee
             // Take total price of amount since amount is number of shares
             double transactionAmount = 0.0;
@@ -138,4 +142,3 @@ public class StockBroker {
                                 "</orderReceipt>";
             return orderReceipt;
         }
-}
