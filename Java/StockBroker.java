@@ -4,11 +4,6 @@ import java.util.regex.Pattern;
 
 public class StockBroker {
 
-    String brokerName = "";
-    public StockBroker(String brokerName){
-        this.brokerName = brokerName;
-    }
-
     public static String[] stocks = ["AMZN", "APPL", "META", "MSFT", "GOOG", "TSLA", "JNJ", "WMT",
                                      "ACTV", "BLIZ", "ROVIO", "NFLX", "ORCL", "CSCO", "NVO", "NVDA",
                                      "GE", "GMC", "FORD", "TM", "DE", "MUFG", "UBER", "ORLY"];
@@ -116,6 +111,8 @@ public class StockBroker {
 
             // Subscribe to the NATS subject "clientName"
             d.subscribe("kevin");
+            d.subscribe("james");
+            d.subscribe("sarah");
         }
 
 

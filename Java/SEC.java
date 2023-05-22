@@ -28,6 +28,7 @@ public class SEC {
                     }
                 }
             });
+            d.subscribe(*);
         }
 
         Options options = new Options.Builder().server(natsURL).build();
@@ -35,13 +36,16 @@ public class SEC {
     }
 
     private static double parseStockPrice(String message) {
-        // Extract stock price
-        Pattern pattern = Pattern.compile("<adjustedPrice>(.*?)</adjustedPrice>");
-        Matcher matcher = pattern.matcher(message);
-        if (matcher.find()) {
-            return Double.parseDouble(matcher.group(1));
+        if(message.contains("<orderReceipt")){
+            // Extract stock price
+            Pattern pattern = Pattern.compile("<adjustedPrice>(.*?)</adjustedPrice>");
+            Matcher matcher = pattern.matcher(message);
+            if (matcher.find()) {
+                return Double.parseDouble(matcher.group(1));
+            }
+            return 0.0; // 0.0 if not found (shouldn't reach here)
         }
-        return 0.0; // 0.0 if not found (shouldn't reach here)
+        return 0.0;
     }
 
     private static void logToXML(String message) throws Exception {
