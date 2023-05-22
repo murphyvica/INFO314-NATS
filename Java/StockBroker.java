@@ -84,6 +84,7 @@ public class StockBroker {
 
             // Publish the order receipt
             nc.publish(msg.getReplyTo(), orderReceipt.getBytes());
+            nc.publish("SEC", orderReceipt.getBytes());
         });
     
 
@@ -135,7 +136,7 @@ public class StockBroker {
             // Create the order receipt XML using the original message and transaction amount
             String orderReceipt = "<orderReceipt>" +
                                     originalMsgStr +
-                                    "<complete amount=\"" + transactionAmount + "\" />" +
+                                    "<complete amount>" + transactionAmount + "</complete amount>" +
                                 "</orderReceipt>";
             return orderReceipt;
         }

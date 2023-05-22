@@ -11,7 +11,6 @@ import java.util.regex.*;
 
 public class SEC {
 
-    public static String[] brokers = {};
 
     public static void main(String... args) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -24,14 +23,15 @@ public class SEC {
         Options options = new Options.Builder().server(natsURL).build();
         Connection nc = Nats.connect(options);
 
-        for (String broker : brokers) {
+        
             Dispatcher d = nc.createDispatcher((msg) -> {
                 String message = new String(msg.getData());
-                System.out.println(new String(msg.getData()));
                 if(message.contains("<orderReceipt")){
+                    // System.out.println(new String(msg.getData()));
                     double stockPrice = parseStockPrice(message);
-                    if (stockPrice > 50.0) {
+                    if (stockPrice > 10.0) {
                         try {
+                            System.out.println(new String(msg.getData()));
                             logToXML(message);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -39,13 +39,12 @@ public class SEC {
                     }
                 }
             });
-            d.subscribe("*");
-        }
+            d.subscribe("SEC");
     }
 
     private static double parseStockPrice(String message) {
         // Extract stock price
-        Pattern pattern = Pattern.compile("<adjustedPrice>(.*?)</adjustedPrice>");
+        Pattern pattern = Pattern.compile("<complete amount>(.*?)</complete amount>");
         Matcher matcher = pattern.matcher(message);
         if (matcher.find()) {
             return Double.parseDouble(matcher.group(1));
@@ -74,7 +73,7 @@ public class SEC {
         DOMSource source = new DOMSource(doc);
 
         // Not sure what we should put in file path
-        String xmlFilePath = "/SEClogs/SEC.xml";
+        String xmlFilePath = "SEClogs/SEC.xml";
         StreamResult result = new StreamResult(new File(xmlFilePath));
 
         // Transform and save the XML file
