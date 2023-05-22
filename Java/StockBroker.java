@@ -6,13 +6,14 @@ import java.util.regex.Pattern;
 
 public class StockBroker {
 
-    public static String[] stocks = {"AMZN", "APPL", "META", "MSFT", "GOOG", "TSLA", "JNJ", "WMT",
+    public static final String[] stocks = {"AMZN", "APPL", "META", "MSFT", "GOOG", "TSLA", "JNJ", "WMT",
                                      "ACTV", "BLIZ", "ROVIO", "NFLX", "ORCL", "CSCO", "NVO", "NVDA",
                                      "GE", "GMC", "FORD", "TM", "DE", "MUFG", "UBER", "ORLY"};
     
-    HashMap<String, Double> stockPrices = new HashMap<String, Double>();
+    private static HashMap<String, Double> stockPrices;
 
     public static void main(String... args) throws Exception {
+        stockPrices = new HashMap<String, Double>();
         // Connect to NATS server
         String natsURL = "nats://127.0.0.1:4222";
         if (args.length > 0) {
@@ -40,6 +41,56 @@ public class StockBroker {
 
         // Keep the program running
         Thread.sleep(Long.MAX_VALUE);
+
+        // 
+            
+        Dispatcher d = nc.createDispatcher((msg) -> {
+            String stockSymbol = "";
+            double amount = 0;
+            boolean buy = true;
+            
+            String xmlMessage = new String(msg.getData());
+            // Extract stockSymbol using regex
+            Pattern symbolPattern = Pattern.compile("symbol=\"(.*?)\"");
+            Matcher symbolMatcher = symbolPattern.matcher(xmlMessage);
+            if (symbolMatcher.find()) {
+                stockSymbol = symbolMatcher.group(1);
+            }
+            
+            // Extract amount using regex
+            //Pattern amountPattern = Pattern.compile("amount=\"(.*?)\"");
+            //Matcher amountMatcher = amountPattern.matcher(xmlMessage);
+            //if (amountMatcher.find()) {
+            //    amount = Integer.parseInt(amountMatcher.group(1));
+            //}
+
+            amount = stockPrices.get(stockSymbol);
+            
+            // Check if it's a buy or sell order
+            buy = xmlMessage.contains("<buy");
+
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e) {
+                // Handle the exception
+            }
+
+            // Perform the buy or sell operation based on the 'buy' variable
+            double transactionAmount = calculateTransactionAmount(amount, buy);
+
+            // Respond to NATS message with the following structure:
+            // <orderReceipt><(original msg here)><complete amount="amount" /></orderReceipt>
+            String orderReceipt = createOrderReceipt(msg.getData(), transactionAmount);
+
+            // Publish the order receipt
+            nc.publish(msg.getReplyTo(), orderReceipt.getBytes());
+        });
+    
+
+        // Subscribe to the NATS subject "clientName"
+        d.subscribe("kevin");
+        d.subscribe("james");
+        d.subscribe("sarah");
     }
 
         private static String parseStockSymbol(String message) {
@@ -60,63 +111,9 @@ public class StockBroker {
                 return Double.parseDouble(matcher.group(1));
             }
             return 0.0; // 0.0 if not found (shouldn't reach here)
-        }
+        
             // inisialize with multiple stock brokers
 
-    
-
-            //Subscribe to all stocks to get price
-
-            Connection nc = Nats.connect(natsURL);
-
-            
-            Dispatcher d = nc.createDispatcher((msg) -> {
-                String stockSymbol = "";
-                double amount = 0;
-                boolean buy = true;
-                
-                String xmlMessage = new String(msg.getData());
-                // Extract stockSymbol using regex
-                Pattern symbolPattern = Pattern.compile("symbol=\"(.*?)\"");
-                Matcher symbolMatcher = symbolPattern.matcher(xmlMessage);
-                if (symbolMatcher.find()) {
-                    stockSymbol = symbolMatcher.group(1);
-                }
-                
-                // Extract amount using regex
-                //Pattern amountPattern = Pattern.compile("amount=\"(.*?)\"");
-                //Matcher amountMatcher = amountPattern.matcher(xmlMessage);
-                //if (amountMatcher.find()) {
-                //    amount = Integer.parseInt(amountMatcher.group(1));
-                //}
-
-                amount = stockPrices.get(stockSymbol);
-                
-                // Check if it's a buy or sell order
-                buy = xmlMessage.contains("<buy");
-
-                try {
-                    Thread.sleep(2000);
-                } catch (Exception e) {
-                    // Handle the exception
-                }
-
-                // Perform the buy or sell operation based on the 'buy' variable
-                double transactionAmount = calculateTransactionAmount(amount, buy);
-
-                // Respond to NATS message with the following structure:
-                // <orderReceipt><(original msg here)><complete amount="amount" /></orderReceipt>
-                String orderReceipt = createOrderReceipt(msg.getData(), transactionAmount);
-
-                // Publish the order receipt
-                nc.publish(msg.getReplyTo(), orderReceipt.getBytes());
-            });
-        
-
-            // Subscribe to the NATS subject "clientName"
-            d.subscribe("kevin");
-            d.subscribe("james");
-            d.subscribe("sarah");
         }
 
 
@@ -142,3 +139,4 @@ public class StockBroker {
                                 "</orderReceipt>";
             return orderReceipt;
         }
+    }
