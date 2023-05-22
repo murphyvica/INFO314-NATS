@@ -144,39 +144,42 @@ public class StockBrokerClient {
 
             // Use the response
             System.out.println(new String(msg.getData()));
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(new InputSource(new StringReader(new String(msg.getData()))));
+            if (msg != null) {
+                
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document document = builder.parse(new InputSource(new StringReader(new String(msg.getData()))));
 
-            Element root = document.getDocumentElement();
-            if (root.getElementsByTagName("sell").getLength() > 0) {
-                NodeList completeNodes = root.getElementsByTagName("sell");
-                Node completeNode = completeNodes.item(0);
-                if (completeNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element completeElement = (Element) completeNode;
-                    String symbol = completeElement.getAttribute("symbol");
-                    int amount = Integer.parseInt(completeElement.getAttribute("amount"));
-                    int adjustedAmount = 0;
-                    if (stocks.get(symbol) == null) {
-                        adjustedAmount = amount;
-                    } else {
-                        adjustedAmount = stocks.get(symbol) - amount;
+                Element root = document.getDocumentElement();
+                if (root.getElementsByTagName("sell").getLength() > 0) {
+                    NodeList completeNodes = root.getElementsByTagName("sell");
+                    Node completeNode = completeNodes.item(0);
+                    if (completeNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element completeElement = (Element) completeNode;
+                        String symbol = completeElement.getAttribute("symbol");
+                        int amount = Integer.parseInt(completeElement.getAttribute("amount"));
+                        int adjustedAmount = 0;
+                        if (stocks.get(symbol) == null) {
+                            adjustedAmount = amount;
+                        } else {
+                            adjustedAmount = stocks.get(symbol) - amount;
+                        }
+                        stocks.put(symbol, adjustedAmount);
                     }
-                    stocks.put(symbol, adjustedAmount);
-                }
-            } else if (root.getElementsByTagName("buy").getLength() > 0) {
-                NodeList completeNodes = root.getElementsByTagName("buy");
-                Node completeNode = completeNodes.item(0);
-                if (completeNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element completeElement = (Element) completeNode;
-                    String symbol = completeElement.getAttribute("symbol");
-                    int amount = Integer.parseInt(completeElement.getAttribute("amount"));
-                    int adjustedAmount = 0;
-                    if (stocks.get(symbol) == null) {
-                        adjustedAmount = amount;
-                    } else {
-                        adjustedAmount = stocks.get(symbol) + amount;
+                } else if (root.getElementsByTagName("buy").getLength() > 0) {
+                    NodeList completeNodes = root.getElementsByTagName("buy");
+                    Node completeNode = completeNodes.item(0);
+                    if (completeNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element completeElement = (Element) completeNode;
+                        String symbol = completeElement.getAttribute("symbol");
+                        int amount = Integer.parseInt(completeElement.getAttribute("amount"));
+                        int adjustedAmount = 0;
+                        if (stocks.get(symbol) == null) {
+                            adjustedAmount = amount;
+                        } else {
+                            adjustedAmount = stocks.get(symbol) + amount;
+                        }
+                        stocks.put(symbol, adjustedAmount);
                     }
-                    stocks.put(symbol, adjustedAmount);
                 }
             }
         } catch (Exception e) {
