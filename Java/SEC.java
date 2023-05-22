@@ -46,7 +46,7 @@ public class SEC {
 
     private static double parseStockPrice(String message) {
         // Extract stock price
-        Pattern pattern = Pattern.compile("<complete amount>(.*?)</complete amount>");
+        Pattern pattern = Pattern.compile("<total>(.*?)</total>");
         Matcher matcher = pattern.matcher(message);
         if (matcher.find()) {
             return Double.parseDouble(matcher.group(1));

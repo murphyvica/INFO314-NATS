@@ -143,9 +143,7 @@ public class StockBrokerClient {
             Message msg = sub.nextMessage(Duration.ofSeconds(5));
 
             // Use the response
-            System.out.println(new String(msg.getData()));
-            String test = new String(msg.getData());
-            if (msg != null && !test.isEmpty()) {
+            if (msg != null && !(new String(msg.getData()).isEmpty())) {
                 
                 DocumentBuilder builder = factory.newDocumentBuilder();
                 Document document = builder.parse(new InputSource(new StringReader(new String(msg.getData()))));

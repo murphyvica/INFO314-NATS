@@ -12,6 +12,10 @@ import javax.xml.xpath.*;
 import io.nats.client.*;
 
 public class StockMonitor {
+
+    public static final String[] stocks = {"AMZN", "APPL", "META", "MSFT", "GOOG", "TSLA", "JNJ", "WMT",
+    "ACTV", "BLIZ", "ROVIO", "NFLX", "ORCL", "CSCO", "NVO", "NVDA",
+    "GE", "GMC", "FORD", "TM", "DE", "MUFG", "UBER", "ORLY"};
     public static void main(String... args) throws IOException, InterruptedException{
         Connection nc = Nats.connect("nats://localhost:4222");
 
@@ -33,7 +37,9 @@ public class StockMonitor {
                 //logStockData(msg.getData());
             });
     
-            d1.subscribe("*");
+            for (String s : stocks) {
+                d1.subscribe(s);
+            }
 
         }
     }
