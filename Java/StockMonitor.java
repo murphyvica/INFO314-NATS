@@ -1,5 +1,8 @@
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.Paths;
 
 import org.w3c.dom.*;
 import org.xml.sax.*;
@@ -60,15 +63,25 @@ public class StockMonitor {
         String expression2 = "/message/stock";
         NodeList nodeList2 = (NodeList) xpath.compile(expression2).evaluate(doc, XPathConstants.NODESET);
 
-        for (int i = 0; i < nodeList2.getLength(); i++) {
-            Node n2 = nodeList2.item(i);
-            Element e2 = (Element) n2;
-            String change = e2.getElementsByTagName("adjustment").item(0).getTextContent();
-            System.out.println(change);
-            String price = e2.getElementsByTagName("adjustedPrice").item(0).getTextContent();
-            System.out.println(price);
-        }
+        Node n2 = nodeList2.item(0);
+        Element e2 = (Element) n2;
+        String name = e2.getElementsByTagName("name").item(0).getTextContent();
+        System.out.println(name);
+        String change = e2.getElementsByTagName("adjustment").item(0).getTextContent();
+        System.out.println(change);
+        String price = e2.getElementsByTagName("adjustedPrice").item(0).getTextContent();
+        System.out.println(price);
 
+        // Logging to file
+
+        String s = Paths.get(".").toAbsolutePath().normalize().toString();
+        File f = new File(s + "/logs/" + name + "-price.log");
+        if (!f.exists()) {
+            f.createNewFile();
+        }
+        FileWriter myWriter = new FileWriter(f, true);
+        myWriter.write(time + ", " + change + ", " + price);
+        myWriter.close();
 
 
     } catch (Exception ex) {
