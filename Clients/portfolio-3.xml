@@ -1,0 +1,9 @@
+<!-- A tech-heavy portfolio -->
+<portfolio>
+    <stock symbol="ACTV">100</stock>
+    <stock symbol="AMZN">470</stock>
+    <stock symbol="NVO">70</stock>
+    <stock symbol="MUFG">230</stock>
+    <stock symbol="ORLY">120</stock>
+    <stock symbol="APPL">450</stock>
+</portfolio>

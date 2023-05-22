@@ -1,0 +1,9 @@
+<!-- A tech-heavy portfolio -->
+<portfolio>
+    <stock symbol="MSFT">500</stock>
+    <stock symbol="TSLA">450</stock>
+    <stock symbol="WMT">230</stock>
+    <stock symbol="GMC">320</stock>
+    <stock symbol="NVDA">90</stock>
+    <stock symbol="META">200</stock>
+</portfolio>

@@ -1,0 +1,12 @@
+<!-- A very tech-centric strategy -->
+<strategy>
+  <when><stock>ACTV</stock><above>1000</above><sell /></when>
+  <when><stock>AMZN</stock><above>4700</above><sell /></when>
+  <when><stock>NVO</stock><above>700</above><sell /></when>
+  <when><stock>MUFG</stock><above>2300</above><sell /></when>
+  <when><stock>ORLY</stock><below>1000</below><buy>200</buy></when>
+  <when><stock>APPL</stock><below>4400</below><buy>500</buy></when>
+  <when><stock>AMZN</stock><below>4300</below><buy>500</buy></when>
+  <when><stock>NVO</stock><below>500</below><buy>200</buy></when>
+
+</strategy>

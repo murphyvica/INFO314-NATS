@@ -1,1 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><logs><logEntry><message>&lt;orderReceipt&gt;&lt;order&gt;&lt;buy symbol="GOOG" amount="500" /&gt;&lt;/order&gt;&lt;complete amount&gt;29.656000000000002&lt;/complete amount&gt;&lt;/orderReceipt&gt;</message></logEntry></logs>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><logs><logEntry><message>&lt;orderReceipt&gt;&lt;order&gt;&lt;buy symbol="AMZN" amount="500" /&gt;&lt;/order&gt;&lt;complete amount&gt;26.499&lt;/complete amount&gt;&lt;/orderReceipt&gt;</message></logEntry></logs>

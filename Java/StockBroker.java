@@ -91,7 +91,7 @@ public class StockBroker {
         // Subscribe to the NATS subject "clientName"
         d.subscribe("kevin");
         d.subscribe("james");
-        d.subscribe("sarah");
+        // d.subscribe("sarah");
     }
 
         private static String parseStockSymbol(String message) {
@@ -136,7 +136,7 @@ public class StockBroker {
             // Create the order receipt XML using the original message and transaction amount
             String orderReceipt = "<orderReceipt>" +
                                     originalMsgStr +
-                                    "<complete amount>" + transactionAmount + "</complete amount>" +
+                                    "<total>" + transactionAmount + "</total>" +
                                 "</orderReceipt>";
             return orderReceipt;
         }

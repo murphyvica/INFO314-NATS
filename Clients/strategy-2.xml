@@ -1,0 +1,11 @@
+<!-- A very tech-centric strategy -->
+<strategy>
+  <when><stock>ROVIO</stock><above>2000</above><sell /></when>
+  <when><stock>TM</stock><above>1700</above><sell /></when>
+  <when><stock>DE</stock><above>4900</above><sell /></when>
+  <when><stock>JNJ</stock><above>800</above><sell /></when>
+  <when><stock>CSCO</stock><below>3500</below><buy>300</buy></when>
+  <when><stock>UBER</stock><below>1700</below><buy>200</buy></when>
+    <when><stock>ROVIO</stock><below>1500</below><buy>100</buy></when>
+  <when><stock>TM</stock><below>1000</below><buy>200</buy></when>
+</strategy>

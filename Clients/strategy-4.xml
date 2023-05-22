@@ -1,0 +1,11 @@
+<!-- A very tech-centric strategy -->
+<strategy>
+  <when><stock>MSFT</stock><above>5000</above><sell /></when>
+  <when><stock>TSLA</stock><above>4500</above><sell /></when>
+  <when><stock>WMT</stock><above>2300</above><sell /></when>
+  <when><stock>GMC</stock><above>3200</above><sell /></when>
+  <when><stock>NVDA</stock><below>500</below><buy>200</buy></when>
+  <when><stock>META</stock><below>2000</below><buy>300</buy></when>
+  <when><stock>TSLA</stock><below>4100</below><buy>500</buy></when>
+  <when><stock>MSFT</stock><below>4500</below><buy>500</buy></when>
+</strategy>

@@ -1,0 +1,9 @@
+<!-- A tech-heavy portfolio -->
+<portfolio>
+    <stock symbol="ROVIO">200</stock>
+    <stock symbol="TM">170</stock>
+    <stock symbol="DE">490</stock>
+    <stock symbol="JNJ">80</stock>
+    <stock symbol="CSCO">350</stock>
+    <stock symbol="UBER">210</stock>
+</portfolio>
