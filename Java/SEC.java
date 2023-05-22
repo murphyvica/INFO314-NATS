@@ -19,12 +19,14 @@ public class SEC {
         for (String broker : brokers) {
             Dispatcher d = nc.createDispatcher((msg) -> {
                 String message = new String(msg.getData());
-                double stockPrice = parseStockPrice(message);
-                if (stockPrice > 5000.0) {
-                    try {
-                        logToXML(message);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                if(message.contains("<orderReceipt")){
+                    double stockPrice = parseStockPrice(message);
+                    if (stockPrice > 5000.0) {
+                        try {
+                            logToXML(message);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             });
@@ -36,15 +38,13 @@ public class SEC {
     }
 
     private static double parseStockPrice(String message) {
-        if(message.contains("<orderReceipt")){
-            // Extract stock price
-            Pattern pattern = Pattern.compile("<adjustedPrice>(.*?)</adjustedPrice>");
-            Matcher matcher = pattern.matcher(message);
-            if (matcher.find()) {
-                return Double.parseDouble(matcher.group(1));
-            }
-            return 0.0; // 0.0 if not found (shouldn't reach here)
+        // Extract stock price
+        Pattern pattern = Pattern.compile("<adjustedPrice>(.*?)</adjustedPrice>");
+        Matcher matcher = pattern.matcher(message);
+        if (matcher.find()) {
+            return Double.parseDouble(matcher.group(1));
         }
+        return 0.0; // 0.0 if not found (shouldn't reach here)
         return 0.0;
     }
 
