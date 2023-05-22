@@ -144,7 +144,8 @@ public class StockBrokerClient {
 
             // Use the response
             System.out.println(new String(msg.getData()));
-            if (msg != null) {
+            String test = new String(msg.getData());
+            if (msg != null && !test.isEmpty()) {
                 
                 DocumentBuilder builder = factory.newDocumentBuilder();
                 Document document = builder.parse(new InputSource(new StringReader(new String(msg.getData()))));
@@ -181,7 +182,7 @@ public class StockBrokerClient {
                         stocks.put(symbol, adjustedAmount);
                     }
                 }
-            }
+            } 
         } catch (Exception e) {
             e.printStackTrace();
         }

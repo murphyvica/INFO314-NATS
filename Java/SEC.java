@@ -27,9 +27,10 @@ public class SEC {
         for (String broker : brokers) {
             Dispatcher d = nc.createDispatcher((msg) -> {
                 String message = new String(msg.getData());
+                System.out.println(new String(msg.getData()));
                 if(message.contains("<orderReceipt")){
                     double stockPrice = parseStockPrice(message);
-                    if (stockPrice > 5000.0) {
+                    if (stockPrice > 50.0) {
                         try {
                             logToXML(message);
                         } catch (Exception e) {

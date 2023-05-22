@@ -40,7 +40,7 @@ public class StockBroker {
         }
 
         // Keep the program running
-        Thread.sleep(Long.MAX_VALUE);
+        // Thread.sleep(Long.MAX_VALUE);
 
         // 
             
