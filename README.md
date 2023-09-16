@@ -133,19 +133,3 @@ For all of this, create a video or separate videos demonstrating that your imple
 * one SEC to keep a wary eye on everything (*everything*)
 
 Alternatively, if you are camera shy or find it difficult to record a video for some reason, you may schedule time with the TA to show them your running code. However, this is *at the TA's discretion* and is in no way an obligation on their part--the video is the far more scalable option from our perspective.
-
-## Extra Credit
-
-### Secure it! (3 pts)
-
-Run NATS so that all communication is done over TLS and requires all message publishers and consumers to authenticate against the server.
-
-### Format it! (3 pts)
-
-Instead of using XML, pass all messages around using JSON instead. In your video, show your code sending XML messages and then JSON messages, and offer up your group's opinion as to which you prefer. Are there situations where one is better? 
-
-### Interop it! (4 pts)
-
-Work with another group. Have both of your StockMarketPublishers run against a single NATS server and see how your systems react. If your StockMarketPublishers each have the same symbol (such as each group is publishing "MSFT" changes), figure out ways to continue to work *without changing the stock symbol on either side*. (In other words, group A's StockBrokerClients with MSFT in their portfolio should only be seeing and reacting to group A's MSFT price changes even if group B also has a MSFT symbol.)
-
-By the way, make sure that *either* group A's `SEC` *or* group B's `SEC` can see all the activity going on, regardless of which NATS server it is happening on--the SEC knows (and needs to know!) everything!
